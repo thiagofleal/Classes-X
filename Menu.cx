@@ -1,0 +1,269 @@
+/**
+*	Classe: Menu
+*	Classe base: Não há superclasse
+*	
+*	Atributos:
+*		- x: Inteiro
+*		- y: Inteiro
+*		- tamanho: Inteiro
+*		- selecionado: Inteiro
+*		- cor: Inteiro[]
+*		- op: Texto[]
+*		- interface: Objeto
+*	
+*	construtor(Inteiro: x, Inteiro: y, Inteiro: tamanho)
+*	destrutor()
+*	
+*	Métodos:
+*		+ x()
+*		+ y()
+*		+ tamanho()
+*		+ selecionado()
+*		+ cor(Inteiro: indice)
+*		+ alternativa(Inteiro: indice)
+*		+ interface()
+*		+ quantidade()
+*		+ alterarCores(Inteiro: txtSelec, Inteiro: fundoSelec, Inteiro: txt, Inteiro: fundo)
+*		+ prefixo(Texto: selecionado, Texto: padrao)
+*		+ alterarAlternativas(Texto[]: op)
+*		+ alterarInterface(Objeto: interface)
+*		+ exibir()
+*	
+*	Descrição: Classe para criação de menus interativos para interfaces em console
+*/
+
+Classe: Menu
+{
+	Privado:
+		
+		Inteiro: x, y;
+		Inteiro: tamanho;
+		Inteiro: selecionado;
+		Inteiro[]: cor;
+		Texto[]: op;
+		Texto[]: prefixo;
+		Objeto: interface;
+	
+	Publico:
+		
+		/**
+		*	Construtor
+		*	Parâmetros:
+		*		@ x: Inteiro - representa a posição no eixo x do início do menu
+		*		@ y: Inteiro - representa a posição no eixo y do início do menu
+		*		@ tamanho: Inteiro - representa o tamanho máximo em caracteres no eixo x
+		*	Descrição: Inicializa os atributos vitais para o funcionamento do objeto
+		*/
+		construtor(Inteiro: x, Inteiro: y, Inteiro: tamanho)
+		{
+			este.x = x;
+			este.y = y;
+			este.tamanho = tamanho;
+			este.cor = Vetor.inteiro(15, 1, 0, 7);
+			este.prefixo = Vetor.texto("", "");
+		}
+		
+		/**
+		*	Destrutor
+		*	Parâmetros:
+		*		- Não há parâmetros
+		*	Descrição: Libera a memória dinâmica alocada na instância
+		*/
+		destrutor()
+		{
+			este.cor.liberar();
+			este.prefixo.liberar();
+		}
+		
+		/**
+		*	Métodos:
+		*		+ x
+		*		+ y
+		*		+ tamanho
+		*		+ selecionado
+		*		+ interface
+		*		+ quantidade
+		*	Parâmetros:
+		*		Não há parâmetros
+		*	Retorno:
+		*		Inteiro
+		*		Inteiro
+		*		Inteiro
+		*		Inteiro
+		*		Objeto
+		*		Inteiro
+		*	Descrição: retorna o valor dos atributos correspondentes
+		*/
+		
+		x()
+		{retornar: este.x;}
+		y()
+		{retornar: este.y;}
+		tamanho()
+		{retornar: este.tamanho;}
+		selecionado()
+		{retornar: este.selecionado;}
+		interface()
+		{retornar: este.interface;}
+		quantidade()
+		{retornar: este.op.tamanho;}
+		
+		/**
+		*	Métodos:
+		*		+ cor
+		*		+ alternativas
+		*	Parâmetros:
+		*		@ indice: Inteiro - indica o índice do vetor a ser retornado
+		*	Retorno:
+		*		Inteiro
+		*		Texto
+		*	Descrição: valida os índices e retorna o valor dos atributos correspondentes
+		*/
+		
+		cor(Inteiro: indice)
+		{
+			se(indice < este.cor.tamanho)
+				retornar: este.cor[indice];
+		}
+		alternativa(Inteiro: indice)
+		{
+			se(indice < este.op.tamanho)
+				retornar: este.op[indice];
+		}
+		
+		/**
+		*	Método: alterarCores
+		*	Parâmetros:
+		*		@ txtSelec: Inteiro - indica a cor do texto da opção selecionada
+		*		@ fundoSelec: Inteiro - indica a cor de fundo da opção selecionada
+		*		@ txt: Inteiro - indica a cor padrão do texto
+		*		@ fundo: Inteiro - indica a cor padrão do fundo
+		*	Retorno:
+		*		Vazio
+		*	Descrição: Altera as cores do menu
+		*/
+		alterarCores(Inteiro: txtSelec, Inteiro: fundoSelec, Inteiro: txt, Inteiro: fundo)
+		{
+			este.cor.liberar();
+			este.cor = Vetor.inteiro(txtSelec, fundoSelec, txt, fundo);
+		}
+		
+		/**
+		*	Método: prefixo
+		*	Parâmetros:
+		*		@ selecionado: Texto - indica o prefixo da opção selecionada
+		*		@ padrao: Texto - indica o prefixo padrão
+		*	Retorno:
+		*		Vazio
+		*	Descrição: Altera os prefixos das opções do menu
+		*/
+		prefixo(Texto: selecionado, Texto: padrao)
+		{
+			este.prefixo.liberar();
+			este.prefixo = Vetor.texto(selecionado, padrao);
+		}
+		
+		/**
+		*	Método: alterarAlternativasVetor
+		*	Parâmetros:
+		*		@ op: Texto[] - vetor de texto contendo as alternativas a serem utilizadas
+		*	Retorno:
+		*		Vazio
+		*	Descrição: Altera as alternativas do menu
+		*/
+		alterarAlternativasVetor(Texto[]: op)
+		{
+			este.op = op;
+			este.selecionado = 0;
+		}
+		
+		/**
+		*	Método: alterarAlternativasVetor
+		*	Parâmetros:
+		*		@ op: Texto{} - alternativas a serem utilizadas
+		*	Retorno:
+		*		Vazio
+		*	Descrição: Altera as alternativas do menu
+		*/
+		alterarAlternativas({Texto}Texto[]: op)
+		{
+			este.alterarAlternativasVetor(op);
+		}
+		
+		/**
+		*	Método: alterarInterface
+		*	Parâmetros:
+		*		@ interface: Objeto - objeto contendo o método "selecionar(Inteiro: <parâmetro>)"
+		*	Retorno:
+		*		Vazio
+		*	Descrição: Altera a interface do menu
+		*/
+		alterarInterface(Objeto: interface)
+		{
+			este.interface = interface;
+		}
+		
+		/**
+		*	Método: exibir
+		*	Parâmetros:
+		*		Não há parâmetros
+		*	Retorno:
+		*		Inteiro
+		*	Descrição: Inicia o menu e retorna o índice selecionado
+		*/
+		exibir()
+		{
+			Inteiro: tecla;
+			
+			fazer
+			{
+				para(Inteiro: i; i < este.op.tamanho; i++)
+				{
+					Texto: linha;
+					
+					se(i == este.selecionado)
+					{
+						Cores(este.cor[0], este.cor[1]);
+						linha = este.prefixo[0] << este.op[i];
+					}
+					senao
+					{
+						Cores(este.cor[2], este.cor[3]);
+						linha = este.prefixo[1] << este.op[i];
+					}
+					
+					para(Inteiro: j = linha.tamanho; j < este.tamanho; j++)
+					{
+						linha = linha << " ";
+					}
+					
+					Posicionar(este.x, este.y + i);
+					Tela.escrever(linha);
+				}
+				
+				Esperar(100);
+				tecla = Tecla.ler();
+				
+				se(tecla == Tecla.SETA_ACIMA())
+				{
+					se(este.selecionado > 0)
+						este.selecionado--;
+					senao
+						este.selecionado = este.op.tamanho - 1;
+				}
+				se(tecla == Tecla.SETA_ABAIXO())
+				{
+					se(este.selecionado < este.op.tamanho - 1)
+						este.selecionado++;
+					senao
+						este.selecionado = 0;
+				}
+			}
+			enquanto(tecla != Tecla.ENTER());
+			
+			se(este.interface != Nulo)
+				este.interface.selecionar(este.selecionado);
+			
+			retornar: este.selecionado;
+		}
+}

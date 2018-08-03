@@ -1,0 +1,30 @@
+Classe: Valor
+{
+	Privado:
+		
+		Real: valor;
+	
+	Publico:
+		
+		construtor(Real: valor)
+		{
+			este.valor = valor;
+		}
+		
+		caractere()
+		{
+			Caractere: valor = este.valor;
+			retornar: valor;
+		}
+		
+		inteiro()
+		{
+			Inteiro: valor = este.valor;
+			retornar: valor;
+		}
+		
+		real()
+		{
+			retornar: este.valor;
+		}
+}
