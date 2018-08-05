@@ -341,7 +341,7 @@ Classe: Menu
 				se(tecla == este.teclaControle[2])
 				{
 					Objeto: item = este.valor(este.selecionado);
-					Objeto: evento = novo EventoSelecao(este.selecionado, tecla, este.selecoes, este, item);
+					Objeto: evento = novo EventoSelecao(este.selecionado, tecla, este.selecoes, virtual, item);
 					
 					este.selecoes++;
 					
