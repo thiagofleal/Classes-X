@@ -1,0 +1,200 @@
+Incluir: @"Utilidades/Interno/ErroIndice.cx";
+Incluir: @"Utilidades/Interno/dado.cx";
+
+/**
+*	Classe: Lista
+*	Classe base: Não há superclasse
+*	
+*	Atributos:
+*		- tamanho: Inteiro
+*		- lista: Objeto
+*	
+*	construtor() - Não implementado (construtor padrão)
+*	destrutor()
+*	
+*	Métodos:
+*		- dado(Inteiro: indice)
+*		+ tamanho()
+*		+ adicionar(Objeto: valor)
+*		+ Posicionar(Objeto: valor, Inteiro: indice)
+*		+ remover(Inteiro: indice)
+*		+ valor(Inteiro: indice)
+*	
+*	Descrição: Classe para criação de listas encadeadas
+*/
+
+Classe: Lista
+{
+	Privado:
+		
+		Inteiro: tamanho;
+		Objeto: lista;
+		
+		/**
+		*	Método: dado
+		*	Parâmetros:
+		*		@ indice: Inteiro - indica o ídice do dado a ser procurado
+		*	Retorno: Objeto
+		*	Descrição: retorna o nó correspondente ao índice informado como argumento
+		*/
+		
+		dado(Inteiro: indice)
+		{
+			Objeto: ret = este.lista;
+			
+			se(indice < 0 || indice >= este.tamanho)
+			{
+				disparar: novo ErroIndice("Impossível acessar o índice " << indice);
+			}
+			
+			para(Inteiro: i; i < indice; i++)
+				ret = ret.proximo;
+			
+			retornar: ret;
+		}
+		
+	Publico:
+		
+		/**
+		*	Destrutor
+		*	Parâmetros:
+		*		- Não há parâmetros
+		*	Descrição: Libera a memória dinâmica alocada na instância
+		*/
+		
+		destrutor()
+		{
+			enquanto(este.tamanho > 0)
+			{
+				este.remover(0);
+			}
+			
+			se(este.lista != Nulo)
+			{
+				este.lista.destruir();
+			}
+		}
+		
+		/**
+		*	Método: tamanho
+		*	Parâmetros:
+		*		Não há parâmetros
+		*	Retorno: Inteiro
+		*	Descrição: retorna a quantidade de dados armazenados na lista
+		*/
+		
+		tamanho()
+		{retornar: este.tamanho;}
+		
+		/**
+		*	Método: adicionar
+		*	Parâmetros:
+		*		@ valor: Objeto - dado a ser adicionado à lista
+		*	Retorno: Vazio
+		*	Descrição: adiciona o valor indicado como argumento ao fim da lista
+		*/
+		
+		adicionar(Objeto: valor)
+		{
+			Objeto: no =  novo dado();
+			
+			no.valor = valor;
+			
+			se(este.tamanho == 0)
+			{
+				este.lista = no;
+			}
+			senao
+			{
+				este.dado(este.tamanho - 1).proximo = no;
+			}
+			este.tamanho++;
+		}
+		
+		/**
+		*	Método: Posicionar
+		*	Parâmetros:
+		*		@ valor: Objeto - dado a ser adicionado à lista
+		*		@ indice: Inteiro - indica o ídice do dado a ser adicionado
+		*	Retorno: Vazio
+		*	Descrição: adiciona o valor indicado como argumento ao índice da lista indicado
+		*/
+		
+		Posicionar(Objeto: valor, Inteiro: indice)
+		{
+			Objeto: no = novo dado();
+			
+			no.valor = valor;
+			
+			se(este.lista == Nulo)
+			{
+				se(indice == 0)
+					retornar: este.adicionar(valor);
+				senao
+					disparar: novo ErroIndice("Impossível acessar o índice " << indice);
+			}
+			
+			se(indice == 0)
+			{
+				Objeto: lista = este.lista;
+				
+				no.proximo = lista;
+				este.lista = no;
+			}
+			senao
+			{
+				Objeto: anterior = este.dado(indice - 1);
+				Objeto: atual = anterior.proximo;
+				
+				no.proximo = atual;
+				anterior.proximo = no;
+				este.tamanho++;
+			}
+		}
+		
+		/**
+		*	Método: remover
+		*	Parâmetros:
+		*		@ indice: Inteiro - indica o ídice do dado a ser removido
+		*	Retorno: Vazio
+		*	Descrição: remove da lista o valor do índice indicado
+		*/
+		
+		remover(Inteiro: indice)
+		{
+			se(este.tamanho == 0)
+			{
+				disparar: novo ErroIndice("Impossível remover valor de lista vazia");
+			}
+			
+			se(indice != 0)
+			{
+				Objeto: anterior = este.dado(indice - 1);
+				Objeto: atual = este.dado(indice);
+			
+				anterior.proximo = atual.proximo;
+				atual.destruir();
+			}
+			senao
+			{
+				Objeto: inicio = este.lista;
+				
+				este.lista = inicio.proximo;
+				inicio.destruir();
+			}
+			este.tamanho--;
+		}
+		
+		/**
+		*	Método: valor
+		*	Parâmetros:
+		*		@ indice: Inteiro - indica o ídice do dado a ser retornado
+		*	Retorno: Objeto
+		*	Descrição: retorna o valor do índice da lista indicado
+		*/
+		
+		valor(Inteiro: indice)
+		{
+			retornar: este.dado(indice).valor;
+		}
+}

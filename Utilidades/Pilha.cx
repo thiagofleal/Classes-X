@@ -1,0 +1,112 @@
+Incluir: @"Utilidades/Interno/dado.cx";
+
+Classe: ErroPilha
+{
+	Herdar: Erro;
+	
+	construtor(Texto: msg)
+	{
+		base(msg);
+	}
+	
+	mensagem()
+	{
+		retornar: "Erro de pilha\n" << base.mensagem();
+	}
+}
+
+/**
+*	Classe: Pilha
+*	Classe base: Não há superclasse
+*	
+*	Atributos:
+*		- tamanho: Inteiro
+*		- pilha: Objeto
+*	
+*	construtor() - Não implementado (construtor padrão)
+*	destrutor()
+*	
+*	Métodos:
+*		+ tamanho()
+*		+ empilhar(Objeto: valor)
+*		+ desempilhar()
+*	
+*	Descrição: Classe para criação de pilhas encadeadas
+*/
+
+Classe: Pilha
+{
+	Privado:
+		
+		Inteiro: tamanho;
+		Objeto: pilha;
+		
+	Publico:
+		
+		/**
+		*	Destrutor
+		*	Parâmetros:
+		*		- Não há parâmetros
+		*	Descrição: Libera a memória dinâmica alocada na instância
+		*/
+		
+		destrutor()
+		{
+			enquanto(este.tamanho > 0)
+			{
+				este.desempilhar();
+			}
+			
+			se(este.pilha != Nulo)
+			{
+				este.pilha.destruir();
+			}
+		}
+		
+		tamanho()
+		{retornar: este.tamanho;}
+		
+		/**
+		*	Método: empilhar
+		*	Parâmetros:
+		*		@ valor: Objeto - dado a ser adicionado à pilha
+		*	Retorno: Vazio
+		*	Descrição: empilha o valor indicado como argumento
+		*/
+		
+		empilhar(Objeto: valor)
+		{
+			Objeto: no =  novo dado();
+			
+			no.valor = valor;
+			no.proximo = este.pilha;
+			este.pilha = no;
+			este.tamanho++;
+		}
+		
+		/**
+		*	Método: desempilhar
+		*	Parâmetros:
+		*		Não há parâmetros
+		*	Retorno: Objeto
+		*	Descrição: desempilha o dado contido no topo da pilha
+		*/
+		
+		desempilhar()
+		{
+			se(este.tamanho == 0)
+			{
+				disparar: novo ErroPilha("Impossível desempilhar: Pilha vazia");
+			}
+			
+			Objeto: topo = este.pilha;
+			Objeto: valor = este.pilha.valor;
+			
+			este.pilha = topo.proximo;
+			
+			topo.destruir();
+			este.tamanho--;
+			
+			retornar: valor;
+		}
+}

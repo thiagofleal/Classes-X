@@ -1,0 +1,428 @@
+Incluir: @"Interface/Interno/EventoSelecao.cx";
+Incluir: @"Interface/Item.cx";
+Incluir: @"Utilidades/Lista.cx";
+
+/**
+*	Classe: Menu
+*	Classe base: Lista
+*	
+*	Atributos:
+*		- sair: Logico;
+*		- ciclo: Logico;
+*		- selecionado: Inteiro;
+*		- selecoes: Inteiro;
+*		- x: Inteiro;
+*		- y: Inteiro;
+*		- altX: Inteiro;
+*		- altY: Inteiro;
+*		- largura: Inteiro;
+*		- cor: teclaControle[];
+*		- prefixo: Texto[];
+*		- sufixo: Texto[];
+*		- interface: Objeto;
+*	
+*	construtor(Inteiro: x, Inteiro: y, Inteiro: largura)
+*	destrutor()
+*	
+*	Métodos:
+*		+ selecionado()
+*		+ x()
+*		+ y()
+*		+ largura()
+*		+ interface()
+*		+ ciclico(Logico{}: valor)
+*		+ teclaControle(Inteiro: indice)
+*		+ variacaoX()
+*		+ variacaoY()
+*		+ alterarVariacao(Inteiro: altX, Inteiro: altY)
+*		+ alterarLargura(Inteiro: largura)
+*		+ alterarTeclaControle(Inteiro: indice, Inteiro: valor)
+*		+ alterarInterface(Objeto: interface)
+*		+ prefixo(Texto: selecionado, Texto: padrao)
+*		+ sufixo(Texto: selecionado, Texto: padrao)
+*		+ sair()
+*		+ exibir()
+*		+ exibirCiclo()
+*	
+*	Descrição: Classe para criação de menus
+*/
+
+Classe: Menu
+{
+	Herdar: Lista;
+	
+	Privado:
+		
+		Logico: sair, ciclo;
+		Inteiro: selecionado, selecoes;
+		Inteiro: x, y, altX, altY;
+		Inteiro: largura;
+		Inteiro: []teclaControle;
+		Texto[]: prefixo, sufixo;
+		Objeto: interface;
+	
+	Publico:
+		
+		/**
+		*	Construtor
+		*	Parâmetros:
+		*		@ x: Inteiro - posição harizontal do início do menu em relação ao lado esquerdo
+		*		@ y: Inteiro - posição vertical do início do menu em relação ao topo
+		*		@ largura: Inteiro - comprimento mínimo dos ítens do menu ao serem exibidos
+		*	Descrição: Inicializa os atributos da instância
+		*/
+		construtor(Inteiro: x, Inteiro: y, Inteiro: largura)
+		{
+			este.x = x;
+			este.y = y;
+			este.ciclo = verdadeiro;
+			este.altX = 0;
+			este.altY = 1;
+			este.largura = largura;
+			este.teclaControle = Vetor.inteiro(
+				Tecla.SETA_ABAIXO(),
+				Tecla.SETA_ACIMA(),
+				Tecla.ENTER(),
+				Tecla.ENTER()
+			);
+			este.prefixo = Vetor.texto("|", " ");
+			este.sufixo = Vetor.texto("|", " ");
+		}
+		
+		/**
+		*	Destrutor
+		*	Parâmetros:
+		*		- Não há parâmetros
+		*	Descrição: Libera a memória dinâmica alocada na instância
+		*/
+		destrutor()
+		{
+			este.teclaControle.liberar();
+			este.prefixo.liberar();
+			este.sufixo.liberar();
+		}
+		
+		/**
+		*	Método: limpar
+		*	Parâmetros
+		*		Não há parâmetros
+		*	Retorno:
+		*		Vazio
+		*	Descrição: Remove os itens do menu
+		*/
+		limpar()
+		{
+			enquanto(este.tamanho() > 0)
+			{
+				Objeto: item = este.valor(0);
+				
+				se(item.interface() != Nulo)
+				{
+					item.interface().destruir();
+				}
+				
+				item.destruir();
+				este.remover(0);
+			}
+		}
+		
+		/**
+		*	Métodos:
+		*		+ selecionado
+		*		+ x
+		*		+ y
+		*		+ largura
+		*		+ variacaoX
+		*		+ variacaoY
+		*		+ interface
+		*	Parâmetros:
+		*		Não há parâmetros
+		*	Retorno:
+		*		Inteiro
+		*		Inteiro
+		*		Inteiro
+		*		Inteiro
+		*		Inteiro
+		*		Inteiro
+		*		Objeto
+		*	Descrição: Retorna o valor dos atributos correspondentes
+		*/
+		
+		selecionado()
+		{retornar: este.selecionado;}
+		
+		x()
+		{retornar: este.x;}
+		
+		y()
+		{retornar: este.y;}
+		
+		largura()
+		{retornar: este.largura;}
+		
+		variacaoX()
+		{retornar: este.altX;}
+		
+		variacaoY()
+		{retornar: este.altY;}
+		
+		interface()
+		{retornar: este.interface;}
+		
+		/**
+		*	Método: ciclico
+		*	Parâmetros
+		*		@ valor: Logico{} - valor a ser atribuído ao atributo ciclo (opcional)
+		*	Retorno:
+		*		Logico
+		*	Descrição: Altera e/ou retorna o valor do atributo ciclo
+		*/
+		ciclico({Logico}Logico[]: valor)
+		{
+			se(valor.tamanho > 0)
+			{
+				este.ciclo = valor[0];
+				valor.liberar();
+			}
+			
+			retornar: este.ciclo;
+		}
+		
+		/**
+		*	Método: teclaControle
+		*	Parâmetros
+		*		@ indice: Inteiro - índice do vetor a ser retornado
+		*	Retorno:
+		*		Inteiro
+		*	Descrição: Retorna o valor do vetor teclaControle correspondente ao índice indicado ou 0 caso o índice seja inválido
+		*/
+		teclaControle(Inteiro: indice)
+		{
+			tentar
+			{
+				retornar: este.teclaControle[indice];
+			}
+			pegar(ErroEstouroVetor: e)
+			{
+				retornar: 0;
+			}
+		}
+		
+		/**
+		*	Método: alterarVariacao
+		*	Parâmetros
+		*		@ altX: Inteiro - variação em X
+		*		@ altY: Inteiro - variação em Y
+		*	Retorno:
+		*		Vazio
+		*	Descrição: Altera os valores correspondentes à distância entre os itens do menu
+		*/
+		alterarVariacao(Inteiro: altX, Inteiro: altY)
+		{
+			este.altX = altX;
+			este.altY = altY;
+		}
+		
+		/**
+		*	Método: alterarLargura
+		*	Parâmetros
+		*		@ largura: Inteiro - comprimento mínimo dos ítens do menu
+		*	Retorno:
+		*		Vazio
+		*	Descrição: Altera o comprimento mínimo dos itens do menu
+		*/
+		alterarLargura(Inteiro: largura)
+		{
+			se(largura >= 0)
+			{
+				este.largura = largura;
+			}
+		}
+		
+		/**
+		*	Método: alterarTeclaControle
+		*	Parâmetros
+		*		@ indice: Inteiro - índice correspondente à tecla
+		*		@ valor: Inteiro - valor da tecla a ser utilizada
+		*	Retorno:
+		*		Logico
+		*	Descrição: Altera a tecla a ser utilizada para controlar o menu.
+		*				Retorna verdadeiro caso a alteração tenha sido bem-sucedida
+		*				ou falso caso o índice da tecla seja inválido
+		*/
+		alterarTeclaControle(Inteiro: indice, Inteiro: valor)
+		{
+			se(valor > 0 && valor < 512)
+			{
+				tentar
+				{
+					este.teclaControle[indice] = valor;
+					retornar: verdadeiro;
+				}
+				pegar(ErroEstouroVetor: e)
+				{}
+			}
+			
+			retornar: falso;
+		}
+		
+		/**
+		*	Método: alterarInterface
+		*	Parâmetros
+		*		@ interface: Objeto - interface contendo o método de seleção do menu
+		*	Retorno:
+		*		Vazio
+		*	Descrição: Altera a interface que contém o método a ser executado quando um item do menu for selecionado.
+		*				A interface deve conter o método "selecionar" que possui um objeto como parâmetro.
+		*/
+		alterarInterface(Objeto: interface)
+		{
+			este.interface = interface;
+		}
+		
+		/**
+		*	Método: prefixo
+		*	Parâmetros
+		*		@ selecionado: Texto - prefixo do item selecionado
+		*		@ padrao: Texto - prefixo dos itens não selecionados
+		*	Retorno:
+		*		Vazio
+		*	Descrição: Altera o prefixo utilizado para os itens do menu
+		*/
+		prefixo(Texto: selecionado, Texto: padrao)
+		{
+			este.prefixo[0] = selecionado;
+			este.prefixo[1] = padrao;
+		}
+		
+		/**
+		*	Método: sufixo
+		*	Parâmetros
+		*		@ selecionado: Texto - sufixo do item selecionado
+		*		@ padrao: Texto - sufixo dos itens não selecionados
+		*	Retorno:
+		*		Vazio
+		*	Descrição: Altera o sufixo utilizado para os itens do menu
+		*/
+		sufixo(Texto: selecionado, Texto: padrao)
+		{
+			este.sufixo[0] = selecionado;
+			este.sufixo[1] = padrao;
+		}
+		
+		/**
+		*	Método: sair
+		*	Parâmetros
+		*		Não há parâmetros
+		*	Retorno:
+		*		Vazio
+		*	Descrição: Encerra o ciclo de exibição do menu
+		*/
+		sair()
+		{
+			este.sair = verdadeiro;
+		}
+		
+		/**
+		*	Método: exibir
+		*	Parâmetros
+		*		Não há parâmetros
+		*	Retorno:
+		*		Inteiro
+		*	Descrição: Exibe o menu até um item ser selecionado e retorna o índice selecionado
+		*/
+		exibir()
+		{
+			Inteiro: tecla;
+			
+			este.sair = falso;
+			
+			enquanto(verdadeiro)
+			{
+				Inteiro: x = este.x;
+				Inteiro: y = este.y;
+				
+				para(Inteiro: i; i < este.tamanho(); i++)
+				{
+					se(i == este.selecionado)
+					{
+						este.valor(i).selecionar(verdadeiro);
+						este.valor(i).exibir(x, y, este.largura, este.prefixo[0], este.sufixo[0]);
+					}
+					senao
+					{
+						este.valor(i).selecionar(falso);
+						este.valor(i).exibir(x, y, este.largura, este.prefixo[1], este.sufixo[1]);
+					}
+					
+					x += este.altX;
+					y += este.altY;
+				}
+				
+				tecla = Tecla.ler();
+				
+				se(tecla == este.teclaControle[0])
+				{
+					se(este.selecionado < este.tamanho() - 1)
+					{
+						este.selecionado++;
+					}
+					senao se(este.ciclo)
+					{
+						este.selecionado = 0;
+					}
+				}
+				se(tecla == este.teclaControle[1])
+				{
+					se(este.selecionado > 0)
+					{
+						este.selecionado--;
+					}
+					senao se(este.ciclo)
+					{
+						este.selecionado = este.tamanho() - 1;
+					}
+				}
+				se(tecla == este.teclaControle[2])
+				{
+					Objeto: item = este.valor(este.selecionado);
+					Objeto: evento = novo EventoSelecao(este.selecionado, tecla, este.selecoes, virtual, item);
+					
+					este.selecoes++;
+					
+					se(este.interface != Nulo)
+					{
+						este.interface.selecionar(evento);
+					}
+					
+					se(item.interface() != Nulo)
+					{
+						item.interface().selecionar(evento);
+					}
+					
+					evento.destruir();
+					retornar: este.selecionado;
+				}
+				se(tecla == este.teclaControle[3])
+				{
+					retornar: este.selecionado;
+				}
+			}
+		}
+		
+		/**
+		*	Método: exibirCiclo
+		*	Parâmetros
+		*		Não há parâmetros
+		*	Retorno:
+		*		Vazio
+		*	Descrição: Inicia um ciclo de exibição do menu que será executado até uma chamada ao método "sair()"
+		*/
+		exibirCiclo()
+		{
+			enquanto(!este.sair)
+			{
+				virtual.exibir();
+			}
+		}
+}

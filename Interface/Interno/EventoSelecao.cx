@@ -1,0 +1,86 @@
+/**
+*	Classe: EventoSelecao
+*	Classe base: Não há superclasse
+*	
+*	Atributos:
+*		- indice: Inteiro
+*		- tecla: Inteiro
+*		- selecoesMenu: Inteiro
+*	
+*	construtor(Inteiro: indice, Inteiro: tecla, Inteiro: selecoesMenu)
+*	destrutor() - destrutor padrão
+*	
+*	Métodos:
+*		+ indiceMenu()
+*		+ teclaPressionada()
+*		+ selecoesMenu()
+*		+ menu()
+*		+ item()
+*	
+*	Descrição: Classe para eventos de seleção de item do menu
+*/
+
+Classe: EventoSelecao
+{
+	Privado:
+		
+		Inteiro: indice;
+		Inteiro: tecla;
+		Inteiro: selecoesMenu;
+		Objeto: menu;
+		Objeto: item;
+	
+	Publico:
+		
+		/**
+		*	Construtor
+		*	Parâmetros:
+		*		@ indice: Inteiro - índice do item selecionado no menu
+		*		@ tecla: Inteiro - tecla pressionada para selecionar
+		*		@ selecoesMenu: Inteiro - quantidade de seleções do menu
+		*		@ menu: Objeto - instância do menu
+		*		@ item: Objeto - item do menu selecionado
+		*	Descrição: Inicializa os valores da instância
+		*/
+		construtor(Inteiro: indice, Inteiro: tecla, Inteiro: selecoesMenu, Objeto: menu, Objeto: item)
+		{
+			este.indice = indice;
+			este.tecla = tecla;
+			este.selecoesMenu = selecoesMenu;
+			este.menu = menu;
+			este.item = item;
+		}
+		
+		/**
+		*	Métodos:
+		*		+ indiceMenu
+		*		+ teclaPressionada
+		*		+ selecoesMenu
+		*		+ menu
+		*		+ item
+		*	Parâmetros:
+		*		Não há parâmetros
+		*	Retorno:
+		*		Inteiro
+		*		Inteiro
+		*		Inteiro
+		*		Objeto
+		*		Objeto
+		*	Descrição: retorna o valor dos atributos correspondentes
+		*/
+		
+		indiceMenu()
+		{retornar: este.indice;}
+		
+		teclaPressionada()
+		{retornar: este.tecla;}
+		
+		selecoesMenu()
+		{retornar: este.selecoesMenu;}
+		
+		menu()
+		{retornar: este.menu;}
+		
+		item()
+		{retornar: este.item;}
+}
