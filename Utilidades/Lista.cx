@@ -3,16 +3,16 @@ Incluir: @"Utilidades/Interno/dado.cx";
 
 /**
 *	Classe: Lista
-*	Classe base: N„o h· superclasse
+*	Classe base: N√£o h√° superclasse
 *	
 *	Atributos:
 *		- tamanho: Inteiro
 *		- lista: Objeto
 *	
-*	construtor() - N„o implementado (construtor padr„o)
+*	construtor() - N√£o implementado (construtor padr√£o)
 *	destrutor()
 *	
-*	MÈtodos:
+*	M√©todos:
 *		- dado(Inteiro: indice)
 *		+ tamanho()
 *		+ adicionar(Objeto: valor)
@@ -20,7 +20,7 @@ Incluir: @"Utilidades/Interno/dado.cx";
 *		+ remover(Inteiro: indice)
 *		+ valor(Inteiro: indice)
 *	
-*	DescriÁ„o: Classe para criaÁ„o de listas encadeadas
+*	Descri√ß√£o: Classe para cria√ß√£o de listas encadeadas
 */
 
 Classe: Lista
@@ -31,11 +31,11 @@ Classe: Lista
 		Objeto: lista;
 		
 		/**
-		*	MÈtodo: dado
-		*	Par‚metros:
-		*		@ indice: Inteiro - indica o Ìdice do dado a ser procurado
+		*	M√©todo: dado
+		*	Par√¢metros:
+		*		@ indice: Inteiro - indica o √≠dice do dado a ser procurado
 		*	Retorno: Objeto
-		*	DescriÁ„o: retorna o nÛ correspondente ao Ìndice informado como argumento
+		*	Descri√ß√£o: retorna o n√≥ correspondente ao √≠ndice informado como argumento
 		*/
 		
 		dado(Inteiro: indice)
@@ -44,7 +44,7 @@ Classe: Lista
 			
 			se(indice < 0 || indice >= este.tamanho)
 			{
-				disparar: novo ErroIndice("ImpossÌvel acessar o Ìndice " << indice);
+				disparar: novo ErroIndice("Imposs√≠vel acessar o √≠ndice " << indice);
 			}
 			
 			para(Inteiro: i; i < indice; i++)
@@ -57,9 +57,9 @@ Classe: Lista
 		
 		/**
 		*	Destrutor
-		*	Par‚metros:
-		*		- N„o h· par‚metros
-		*	DescriÁ„o: Libera a memÛria din‚mica alocada na inst‚ncia
+		*	Par√¢metros:
+		*		- N√£o h√° par√¢metros
+		*	Descri√ß√£o: Libera a mem√≥ria din√¢mica alocada na inst√¢ncia
 		*/
 		
 		destrutor()
@@ -76,51 +76,56 @@ Classe: Lista
 		}
 		
 		/**
-		*	MÈtodo: tamanho
-		*	Par‚metros:
-		*		N„o h· par‚metros
+		*	M√©todo: tamanho
+		*	Par√¢metros:
+		*		N√£o h√° par√¢metros
 		*	Retorno: Inteiro
-		*	DescriÁ„o: retorna a quantidade de dados armazenados na lista
+		*	Descri√ß√£o: retorna a quantidade de dados armazenados na lista
 		*/
 		
 		tamanho()
 		{retornar: este.tamanho;}
 		
 		/**
-		*	MÈtodo: adicionar
-		*	Par‚metros:
-		*		@ valor: Objeto - dado a ser adicionado ‡ lista
-		*	Retorno: Vazio
-		*	DescriÁ„o: adiciona o valor indicado como argumento ao fim da lista
+		*	M√©todo: adicionar
+		*	Par√¢metros:
+		*		@ valor: Objeto - dado a ser adicionado √† lista
+		*	Retorno: Objeto
+		*	Descri√ß√£o: adiciona o valor indicado como argumento ao fim da lista e retorna a pr√≥pria lista
 		*/
 		
-		adicionar(Objeto: valor)
+		adicionar({Objeto}Objeto[]: valor)
 		{
-			Objeto: no =  novo dado();
-			
-			no.valor = valor;
-			
-			se(este.tamanho == 0)
+			para(Inteiro: i; i < valor.tamanho; i++)
 			{
-				este.lista = no;
+				Objeto: no =  novo dado();
+				
+				no.valor = valor[i];
+				
+				se(este.tamanho == 0)
+				{
+					este.lista = no;
+				}
+				senao
+				{
+					este.dado(este.tamanho - 1).proximo = no;
+				}
+				este.tamanho++;
 			}
-			senao
-			{
-				este.dado(este.tamanho - 1).proximo = no;
-			}
-			este.tamanho++;
+			
+			retornar: virtual;
 		}
 		
 		/**
-		*	MÈtodo: Posicionar
-		*	Par‚metros:
-		*		@ valor: Objeto - dado a ser adicionado ‡ lista
-		*		@ indice: Inteiro - indica o Ìdice do dado a ser adicionado
+		*	M√©todo: posicionar
+		*	Par√¢metros:
+		*		@ valor: Objeto - dado a ser adicionado √† lista
+		*		@ indice: Inteiro - indica o √≠dice do dado a ser adicionado
 		*	Retorno: Vazio
-		*	DescriÁ„o: adiciona o valor indicado como argumento ao Ìndice da lista indicado
+		*	Descri√ß√£o: adiciona o valor indicado como argumento ao √≠ndice da lista indicado
 		*/
 		
-		Posicionar(Objeto: valor, Inteiro: indice)
+		posicionar(Objeto: valor, Inteiro: indice)
 		{
 			Objeto: no = novo dado();
 			
@@ -131,7 +136,7 @@ Classe: Lista
 				se(indice == 0)
 					retornar: este.adicionar(valor);
 				senao
-					disparar: novo ErroIndice("ImpossÌvel acessar o Ìndice " << indice);
+					disparar: novo ErroIndice("Imposs√≠vel acessar o √≠ndice " << indice);
 			}
 			
 			se(indice == 0)
@@ -153,18 +158,18 @@ Classe: Lista
 		}
 		
 		/**
-		*	MÈtodo: remover
-		*	Par‚metros:
-		*		@ indice: Inteiro - indica o Ìdice do dado a ser removido
+		*	M√©todo: remover
+		*	Par√¢metros:
+		*		@ indice: Inteiro - indica o √≠dice do dado a ser removido
 		*	Retorno: Vazio
-		*	DescriÁ„o: remove da lista o valor do Ìndice indicado
+		*	Descri√ß√£o: remove da lista o valor do √≠ndice indicado
 		*/
 		
 		remover(Inteiro: indice)
 		{
 			se(este.tamanho == 0)
 			{
-				disparar: novo ErroIndice("ImpossÌvel remover valor de lista vazia");
+				disparar: novo ErroIndice("Imposs√≠vel remover valor de lista vazia");
 			}
 			
 			se(indice != 0)
@@ -186,11 +191,11 @@ Classe: Lista
 		}
 		
 		/**
-		*	MÈtodo: valor
-		*	Par‚metros:
-		*		@ indice: Inteiro - indica o Ìdice do dado a ser retornado
+		*	M√©todo: valor
+		*	Par√¢metros:
+		*		@ indice: Inteiro - indica o √≠dice do dado a ser retornado
 		*	Retorno: Objeto
-		*	DescriÁ„o: retorna o valor do Ìndice da lista indicado
+		*	Descri√ß√£o: retorna o valor do √≠ndice da lista indicado
 		*/
 		
 		valor(Inteiro: indice)
